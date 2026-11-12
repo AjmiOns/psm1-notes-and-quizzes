@@ -42,9 +42,9 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 | # | Topic | Notes | Quiz | Questions |
 |---|-------|-------|------|-----------|
 | 1 | Introduction | [PDF](Course/PSM1_01_Introduction.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_01_Introduction_Quiz.html) | 18 |
-| 2 | Evolution | [PDF](Course/PSM1_02_Evolution.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_02_Evolution_Quiz.html) | n/a |
-| 3 | Agile Foundations | [PDF](Course/PSM1_03_Agile_Foundations.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_03_Agile_Foundations_Quiz.html) | n/a |
-| 4 | Scrum Theory and Basics | [PDF](Course/PSM1_04_Scrum_Theory_and_Basics.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_04_Scrum_Theory_and_Basics_Quiz.html) | n/a |
+| 2 | Evolution | [PDF](Course/PSM1_02_Evolution.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_02_Evolution_Quiz.html) | 10 |
+| 3 | Agile Foundations | [PDF](Course/PSM1_03_Agile_Foundations.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_03_Agile_Foundations_Quiz.html) |10 |
+| 4 | Scrum Theory and Basics | [PDF](Course/PSM1_04_Scrum_Theory_and_Basics.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_04_Scrum_Theory_and_Basics_Quiz.html) | 10 |
 | 5 | Scrum Team Accountabilities | [PDF](Course/PSM1_05_Scrum_Team_Accountabilities.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_05_Scrum_Team_Accountabilities_Quiz.html) | 12 |
 | 6 | Scrum Events | [PDF](Course/PSM1_06_Scrum_Events.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_06_Scrum_Events_Quiz.html) | 21 |
 | 7 | Scrum Artifacts | [PDF](Course/PSM1_07_Scrum_Artifacts.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_07_Scrum_Artifacts_Quiz.html) | 21 |
