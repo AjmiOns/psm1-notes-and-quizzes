@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSM I Quiz 12: Important Terms</title>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f8f6fd; --line: #e3def4;
+    --text: #2e3a4f; --muted: #6b7a90;
+    --accent: #7d6cc0; --accent-tint: #ebe6f9; --on-accent: #ffffff;
+    --ok: #4a9c78; --ok-tint: #e1f5ec;
+    --bad: #c06a82; --bad-tint: #fce6ec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17161d; --surface: #201f29; --line: #3a3750;
+      --text: #e7e8ee; --muted: #9aa3b5;
+      --accent: #a99bea; --accent-tint: #2c2745; --on-accent: #17161d;
+      --ok: #6cc9a0; --ok-tint: #17302a;
+      --bad: #f08aa3; --bad-tint: #3a1f29;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { margin-bottom: 24px; }
+  .tag { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  h1 { margin: 0; font-size: 26px; line-height: 1.25; }
+  .progress { display: flex; align-items: center; gap: 12px; margin: 20px 0 24px; font-size: 14px; color: var(--muted); }
+  .bar { flex: 1; height: 6px; background: var(--accent-tint); border-radius: 3px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+  .q { margin: 0 0 18px; font-size: 20px; line-height: 1.4; font-weight: 600; }
+  .options { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .opt {
+    width: 100%; text-align: left; padding: 13px 16px; font: inherit; color: inherit;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .opt:disabled { cursor: default; }
+  .letter { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-tint); color: var(--accent);
+            font-size: 13px; font-weight: 700; display: grid; place-items: center; margin-top: 1px; }
+  .opt.correct { background: var(--ok-tint); border-color: var(--ok); }
+  .opt.correct .letter { background: var(--ok); color: var(--on-accent); }
+  .opt.wrong { background: var(--bad-tint); border-color: var(--bad); }
+  .opt.wrong .letter { background: var(--bad); color: var(--on-accent); }
+  .opt.dim { opacity: .55; }
+  .feedback { margin-top: 18px; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-tint); border-radius: 0 8px 8px 0; }
+  .feedback.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .feedback.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .feedback strong { display: block; margin-bottom: 2px; }
+  .feedback.ok strong { color: var(--ok); }
+  .feedback.bad strong { color: var(--bad); }
+  .feedback p { margin: 0; }
+  button.primary, button.secondary {
+    font: inherit; font-weight: 600; padding: 11px 22px; border-radius: 8px; cursor: pointer; border: 1.5px solid var(--accent);
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); }
+  button.secondary { background: transparent; color: var(--accent); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .score { font-size: 40px; font-weight: 700; color: var(--accent); margin: 4px 0 2px; }
+  .review { margin: 24px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .review li { padding: 10px 14px; border-radius: 8px; border-left: 4px solid; font-size: 15px; }
+  .review li.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .review li.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .review small { display: block; color: var(--muted); margin-top: 2px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="tag">PSM I | Knowledge check</p>
+    <h1>12. Important Terms in Scrum / Software Development Projects</h1>
+  </header>
+
+  <section id="quiz" aria-live="polite">
+    <div class="progress"><span id="count"></span><div class="bar"><span id="fill"></span></div></div>
+    <h2 class="q" id="question"></h2>
+    <ul class="options" id="options"></ul>
+    <div id="feedback" class="feedback" hidden></div>
+    <div class="actions"><button class="primary" id="next" hidden>Next question</button></div>
+  </section>
+
+  <section id="result" hidden>
+    <p class="tag">Result</p>
+    <div class="score" id="score"></div>
+    <p id="verdict"></p>
+    <ul class="review" id="review"></ul>
+    <div class="actions">
+      <button class="primary" id="retryMissed" hidden>Retry missed questions</button>
+      <button class="secondary" id="restart">Restart quiz</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// To reuse for another chapter, edit only this array (and the <title>/<h1> above).
+// answer = index of the correct option in "options".
+const QUESTIONS = [
+  { q: "Which of the following is a functional requirement of an online shop?",
+    options: ["The shop must be available 99.9% of the time", "The shop must respond within two seconds", "Customers can compare products side by side", "The code must be easy to maintain"],
+    answer: 2,
+    why: "A functional requirement is a specific function of the product from the user's perspective. The others are non-functional (availability, performance, maintainability)." },
+  { q: "Which of the following is a non-functional requirement?",
+    options: ["Express checkout", "Security", "Customer reviews", "A product filter"],
+    answer: 1,
+    why: "Non-functional requirements are quality constraints, such as security, availability, performance and maintainability." },
+  { q: "Who defines the functional requirements, and where are they documented before implementation?",
+    options: ["The Developers, in the Sprint Backlog", "The Scrum Master, in the Retrospective notes", "The stakeholders, in a requirements document", "The Product Owner, in the Product Backlog"],
+    answer: 3,
+    why: "The Product Owner is accountable for the Product Backlog, the single source of work." },
+  { q: "Where are non-functional requirements most commonly reflected?",
+    options: ["In the Definition of Done, because they apply to all Increments to be released", "In a separate non-functional backlog", "Only in the Sprint Goal", "In the Daily Scrum notes"],
+    answer: 0,
+    why: "Following Scrum they can also be part of the Product Backlog, for example as acceptance criteria of items." },
+  { q: "Is a separate backlog for non-functional requirements allowed?",
+    options: ["Yes, owned by the Scrum Master", "Yes, owned by the Developers", "Yes, one per Sprint", "No: they are part of the single Product Backlog managed by the Product Owner"],
+    answer: 3,
+    why: "The Product Backlog is the single source of work and contains everything that enhances the value of the product." },
+  { q: "Who is accountable for non-functional requirements?",
+    options: ["The Product Owner", "The Scrum Master", "The Developers alone", "The quality assurance team"],
+    answer: 0,
+    why: "Both functional and non-functional requirements are the Product Owner's accountability." },
+  { q: "What does a burndown chart measure in Scrum?",
+    options: ["The happiness of the team", "The progress of the current Sprint toward the Sprint Goal", "The total budget of the project", "The number of stakeholders"],
+    answer: 1,
+    why: "It shows the remaining work, for example in story points, against the days remaining in the Sprint." },
+  { q: "What do the two axes of a burndown chart show?",
+    options: ["Cost and risk", "Velocity and quality", "Remaining work (e.g. story points) and days remaining in the Sprint", "Number of Developers and Sprint length"],
+    answer: 2,
+    why: "The vertical axis shows what remains to be delivered, the horizontal axis shows the days left in the Sprint." },
+  { q: "What does the constant negative slope of the gray guideline in a burndown chart represent?",
+    options: ["A fixed deadline imposed by the Product Owner", "The ideal rate of work, reflecting the agile principle of a constant pace", "The team's maximum capacity", "The number of defects"],
+    answer: 1,
+    why: "The guideline shows the ideal rate to complete the Sprint at a constant pace." },
+  { q: "The actual line of the burndown chart is sometimes slightly above and sometimes slightly below the guideline. What does the lecture say?",
+    options: ["The Sprint must be cancelled", "This is fine, but the team should strive to stay as close to the guideline as possible", "The Scrum Master must be replaced", "The Developers must work overtime"],
+    answer: 1,
+    why: "Staying close helps complete the committed work without burning out." },
+  { q: "Is the burndown chart required by Scrum?",
+    options: ["Yes, as a fourth artifact", "Yes, but only for teams over 7 people", "No, it is a commonly used tool, not required by Scrum", "Yes, it replaces the Sprint Backlog"],
+    answer: 2,
+    why: "Many teams use it (for example created automatically in Jira, or in Excel), but Scrum does not require it." },
+  { q: "What does the cone of uncertainty describe?",
+    options: ["Uncertainty is highest at the start of a project and decreases as more is learned", "Uncertainty grows steadily during a project", "Uncertainty is constant", "Uncertainty only exists in agile projects"],
+    answer: 0,
+    why: "At the start little is known, which makes estimation difficult. Learning reduces the uncertainty." },
+  { q: "In which type of project did the concept of the cone of uncertainty first come up?",
+    options: ["Scrum projects", "Waterfall projects, where scope changes at later stages tend to be more costly", "Kanban projects", "Hardware projects only"],
+    answer: 1,
+    why: "In agile projects, going step by step in iterations or Sprints reduces uncertainty." },
+  { q: "What is the Definition of Ready?",
+    options: ["A formal part of the Scrum Guide describing when an Increment is done", "A checklist some teams use to decide whether a Product Backlog item can be taken into a Sprint; it is not part of Scrum", "The Product Owner's list of requirements", "The plan for the Sprint Review"],
+    answer: 1,
+    why: "The Definition of Done is part of Scrum. The Definition of Ready is not." },
+  { q: "Which statement about the Definition of Done and Definition of Ready is correct?",
+    options: ["Both are part of Scrum", "Neither is part of Scrum", "The Definition of Ready is part of Scrum, the Definition of Done is not", "The Definition of Done is part of Scrum, the Definition of Ready is not"],
+    answer: 3,
+    why: "The Definition of Done is the commitment of the Increment in the Scrum Guide." },
+  { q: "Why do some teams introduce a Definition of Ready?",
+    options: ["Because approvals from separate teams (e.g. legal or UX) are needed, or as a defense against unclear items", "Because the Scrum Guide requires it", "Because the Sprint Review needs it", "Because it replaces the Product Backlog"],
+    answer: 0,
+    why: "Another reason is that the Product Owner keeps providing unclear items and the team is forced to commit to them." },
+  { q: "A team asks to introduce a Definition of Ready. What should the Scrum Master do?",
+    options: ["Forbid it immediately", "Introduce it without discussion", "Understand why the team asks and work with the team to resolve the underlying issues", "Ask the stakeholders to decide"],
+    answer: 2,
+    why: "In Scrum everything needed to turn an item into a usable Increment can be done within a Sprint." },
+  { q: "When does the lecturer say a Definition of Ready is acceptable?",
+    options: ["Always", "Never", "Only for teams of more than 10 people", "If the environment demands a fixed set of things to be done or checked before implementation can start"],
+    answer: 3,
+    why: "In all other cases, work with the Product Owner on clearly described items." },
+  { q: "What is technical debt?",
+    options: ["Money owed to the Developers", "The cost of the Scrum Master's training", "A workaround chosen under time pressure that saves time now but slows down later development", "A budget overrun"],
+    answer: 2,
+    why: "It reduces the velocity of the team in the long run." },
+  { q: "A team must choose between a quick workaround and the right solution that takes longer. What should the Scrum Master advise the Product Owner?",
+    options: ["Hide the workaround from stakeholders", "Involve the stakeholders in the implications, such as later refactoring tasks", "Always choose the workaround", "Never discuss it with stakeholders"],
+    answer: 1,
+    why: "Short-term solutions lead to refactoring tasks in later Sprints, which can prevent implementing new requirements in the meantime." },
+  { q: "According to the lecturer, when is a certain amount of technical debt acceptable?",
+    options: ["Never", "When all stakeholders understand the implications and the team actively works on it in one of the next Sprints", "Only in the first Sprint", "Only if the Product Owner hides it"],
+    answer: 1,
+    why: "Otherwise it slows development and reduces velocity in the long run." },
+  { q: "What is the long-term effect of technical debt on a team?",
+    options: ["Velocity increases", "Velocity is unaffected", "Velocity is reduced, so it should be avoided wherever possible", "The Sprint length is shortened automatically"],
+    answer: 2,
+    why: "The shortcut saves time at first but slows down further developments." }
+];
+
+const $ = id => document.getElementById(id);
+const letters = "ABCD";
+let pool = [], idx = 0, results = [];
+
+function start(list) {
+  pool = list.slice(); idx = 0; results = [];
+  $("result").hidden = true; $("quiz").hidden = false;
+  show();
+}
+
+function show() {
+  const item = pool[idx];
+  $("count").textContent = "Question " + (idx + 1) + " of " + pool.length;
+  $("fill").style.width = (idx / pool.length * 100) + "%";
+  $("question").textContent = item.q;
+  $("feedback").hidden = true; $("next").hidden = true;
+  const ul = $("options"); ul.innerHTML = "";
+  item.options.forEach((text, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    b.innerHTML = '<span class="letter">' + letters[i] + '</span><span></span>';
+    b.lastChild.textContent = text;
+    b.addEventListener("click", () => choose(i));
+    li.appendChild(b); ul.appendChild(li);
+  });
+}
+
+function choose(i) {
+  const item = pool[idx], right = i === item.answer;
+  results.push({ item, right });
+  [...$("options").querySelectorAll(".opt")].forEach((b, n) => {
+    b.disabled = true;
+    if (n === item.answer) b.classList.add("correct");
+    else if (n === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const fb = $("feedback");
+  fb.className = "feedback " + (right ? "ok" : "bad");
+  fb.innerHTML = "<strong></strong><p></p>";
+  fb.firstChild.textContent = right ? "Correct" : "Wrong. The answer is " + letters[item.answer] + ".";
+  fb.lastChild.textContent = item.why;
+  fb.hidden = false;
+  $("fill").style.width = ((idx + 1) / pool.length * 100) + "%";
+  const next = $("next");
+  next.textContent = idx === pool.length - 1 ? "See results" : "Next question";
+  next.hidden = false; next.focus();
+}
+
+$("next").addEventListener("click", () => {
+  if (idx === pool.length - 1) return finish();
+  idx++; show();
+});
+
+function finish() {
+  $("quiz").hidden = true; $("result").hidden = false;
+  const got = results.filter(r => r.right).length, total = results.length;
+  $("score").textContent = got + " / " + total;
+  const pct = got / total;
+  $("verdict").textContent = pct === 1 ? "Perfect score. Move on to the next chapter."
+    : pct >= 0.8 ? "Solid. Review the questions you missed below."
+    : "Re-read the chapter notes, then retry the questions you missed.";
+  const ul = $("review"); ul.innerHTML = "";
+  results.forEach(r => {
+    const li = document.createElement("li");
+    li.className = r.right ? "ok" : "bad";
+    li.textContent = (r.right ? "Correct: " : "Missed: ") + r.item.q;
+    if (!r.right) {
+      const s = document.createElement("small");
+      s.textContent = "Answer: " + r.item.options[r.item.answer];
+      li.appendChild(s);
+    }
+    ul.appendChild(li);
+  });
+  const missed = results.filter(r => !r.right).map(r => r.item);
+  $("retryMissed").hidden = missed.length === 0;
+  $("retryMissed").onclick = () => start(missed);
+  window.scrollTo(0, 0);
+}
+
+$("restart").addEventListener("click", () => start(QUESTIONS));
+start(QUESTIONS);
+</script>
+</body>
+</html>

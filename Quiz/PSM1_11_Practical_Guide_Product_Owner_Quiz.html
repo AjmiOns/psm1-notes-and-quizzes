@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSM I Quiz 11: Practical Guide, Serving the Product Owner</title>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f8f6fd; --line: #e3def4;
+    --text: #2e3a4f; --muted: #6b7a90;
+    --accent: #7d6cc0; --accent-tint: #ebe6f9; --on-accent: #ffffff;
+    --ok: #4a9c78; --ok-tint: #e1f5ec;
+    --bad: #c06a82; --bad-tint: #fce6ec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17161d; --surface: #201f29; --line: #3a3750;
+      --text: #e7e8ee; --muted: #9aa3b5;
+      --accent: #a99bea; --accent-tint: #2c2745; --on-accent: #17161d;
+      --ok: #6cc9a0; --ok-tint: #17302a;
+      --bad: #f08aa3; --bad-tint: #3a1f29;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { margin-bottom: 24px; }
+  .tag { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  h1 { margin: 0; font-size: 26px; line-height: 1.25; }
+  .progress { display: flex; align-items: center; gap: 12px; margin: 20px 0 24px; font-size: 14px; color: var(--muted); }
+  .bar { flex: 1; height: 6px; background: var(--accent-tint); border-radius: 3px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+  .q { margin: 0 0 18px; font-size: 20px; line-height: 1.4; font-weight: 600; }
+  .options { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .opt {
+    width: 100%; text-align: left; padding: 13px 16px; font: inherit; color: inherit;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .opt:disabled { cursor: default; }
+  .letter { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-tint); color: var(--accent);
+            font-size: 13px; font-weight: 700; display: grid; place-items: center; margin-top: 1px; }
+  .opt.correct { background: var(--ok-tint); border-color: var(--ok); }
+  .opt.correct .letter { background: var(--ok); color: var(--on-accent); }
+  .opt.wrong { background: var(--bad-tint); border-color: var(--bad); }
+  .opt.wrong .letter { background: var(--bad); color: var(--on-accent); }
+  .opt.dim { opacity: .55; }
+  .feedback { margin-top: 18px; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-tint); border-radius: 0 8px 8px 0; }
+  .feedback.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .feedback.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .feedback strong { display: block; margin-bottom: 2px; }
+  .feedback.ok strong { color: var(--ok); }
+  .feedback.bad strong { color: var(--bad); }
+  .feedback p { margin: 0; }
+  button.primary, button.secondary {
+    font: inherit; font-weight: 600; padding: 11px 22px; border-radius: 8px; cursor: pointer; border: 1.5px solid var(--accent);
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); }
+  button.secondary { background: transparent; color: var(--accent); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .score { font-size: 40px; font-weight: 700; color: var(--accent); margin: 4px 0 2px; }
+  .review { margin: 24px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .review li { padding: 10px 14px; border-radius: 8px; border-left: 4px solid; font-size: 15px; }
+  .review li.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .review li.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .review small { display: block; color: var(--muted); margin-top: 2px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="tag">PSM I | Knowledge check</p>
+    <h1>11. Practical Guide #2: Serving the Product Owner</h1>
+  </header>
+
+  <section id="quiz" aria-live="polite">
+    <div class="progress"><span id="count"></span><div class="bar"><span id="fill"></span></div></div>
+    <h2 class="q" id="question"></h2>
+    <ul class="options" id="options"></ul>
+    <div id="feedback" class="feedback" hidden></div>
+    <div class="actions"><button class="primary" id="next" hidden>Next question</button></div>
+  </section>
+
+  <section id="result" hidden>
+    <p class="tag">Result</p>
+    <div class="score" id="score"></div>
+    <p id="verdict"></p>
+    <ul class="review" id="review"></ul>
+    <div class="actions">
+      <button class="primary" id="retryMissed" hidden>Retry missed questions</button>
+      <button class="secondary" id="restart">Restart quiz</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// To reuse for another chapter, edit only this array (and the <title>/<h1> above).
+// answer = index of the correct option in "options".
+const QUESTIONS = [
+  { q: "A Scrum Master coaches a Product Owner who starts with a new team. What should the Product Owner do first?",
+    options: ["Create the first 50 Product Backlog items", "Start with stakeholder management, before creating a product vision or the first items", "Estimate all items in story points", "Plan the first three Sprints"],
+    answer: 1,
+    why: "Stakeholders are a great source of requirements and input for the vision. Without knowing them you may overlook important information." },
+  { q: "What are the three steps of stakeholder management?",
+    options: ["Identify, classify and create an action plan", "Invite, present and report", "Estimate, order and refine", "Plan, do and review"],
+    answer: 0,
+    why: "Identify the relevant stakeholders, classify them into segments (for example with a stakeholder map) and derive segment-specific actions." },
+  { q: "In the first step, the Product Owner creates a list of stakeholders. What kind of list is it?",
+    options: ["An ordered list by seniority", "An unordered list of all stakeholders who influence the product now or in the near future", "A list of only the end users", "A list of only the most powerful people"],
+    answer: 1,
+    why: "It should include stakeholders who give insight into success factors, and also powerful people in the organization." },
+  { q: "Which two criteria are the axes of the stakeholder map in the lecture?",
+    options: ["Cost and risk", "Value and effort", "Power or influence on the product, and interest in the product", "Size and location"],
+    answer: 2,
+    why: "Based on power and interest you define how to engage with each group of stakeholders." },
+  { q: "How should you handle stakeholders with high power and very high interest in the product?",
+    options: ["Do not spend time on them", "Only send release notes", "Manage them closely: invite them to Sprint Reviews and meet regularly", "Ignore their feedback"],
+    answer: 2,
+    why: "Involve them in the team processes to make them feel part of the team, and get feedback on the product state and vision." },
+  { q: "How should you handle stakeholders with low power but very high interest?",
+    options: ["Keep them informed, e.g. with release notes and feature updates", "Manage them closely", "Do not engage with them", "Keep them satisfied only with positive news"],
+    answer: 0,
+    why: "You could also invite them to Reviews if it makes sense." },
+  { q: "How should you handle stakeholders with high power but low interest in the product?",
+    options: ["Ignore them, they are not interested", "Do not underestimate them: keep them generally satisfied and informed about the value, e.g. through news of new releases", "Invite them to every Daily Scrum", "Let the Developers decide"],
+    answer: 1,
+    why: "You may need their help one day, and you do not want them to feel you waste the organization's money." },
+  { q: "How should you handle stakeholders with low power and low interest?",
+    options: ["Manage them closely", "Do not spend too much time engaging with them", "Invite them to Sprint Planning", "Give them veto rights"],
+    answer: 1,
+    why: "You have better things to do than spend time on this segment." },
+  { q: "What is the purpose of the action plan in stakeholder management?",
+    options: ["To list the Sprint Backlog items", "To define, for each segment, regular actions the team does, and to update it from time to time", "To replace the stakeholder map", "To plan the Retrospective"],
+    answer: 1,
+    why: "Examples: sending release notes to some stakeholders and inviting others to the Sprint Review." },
+  { q: "When should a Product Owner create the product vision?",
+    options: ["After the third Sprint", "At the end of the project", "One of the first things for a new product, so it guides every step", "Only when stakeholders ask for it"],
+    answer: 2,
+    why: "Everything the Product Owner does, such as creating Product Backlog items, must align with the vision." },
+  { q: "Your vision is a consumer-focused (B2C) mobile app. What should the Product Owner do with an item that enables a B2B use case?",
+    options: ["Prioritize it first", "Not create or prioritize it, because it is not aligned with the vision", "Always put it in the next Sprint", "Ask the Developers to decide"],
+    answer: 1,
+    why: "Items that go against the vision should not be created or prioritized." },
+  { q: "Which of the following is NOT a question a product vision should answer?",
+    options: ["Who is the target customer or end user?", "What need will the product fulfill?", "How does the product compare to other products?", "How many story points will the first Sprint have?"],
+    answer: 3,
+    why: "The vision answers who, what need and how it differs from others. Story points are part of estimation." },
+  { q: "Why does the lecturer call decision making support the most important benefit of a product vision?",
+    options: ["It supports the Product Owner to only create and prioritize items aligned with the vision, instead of being distracted by random stakeholder requirements", "It replaces the Product Backlog", "It sets the velocity", "It removes the need for stakeholders"],
+    answer: 0,
+    why: "The Scrum Master should advise the Product Owner to look at the vision before prioritizing the next topics." },
+  { q: "Which statement about the first product vision template (For / Who / The / Is a / That / Unlike / Our product) is correct?",
+    options: ["It is a template to estimate items", "It has empty fields for target group, statement of need, product name and category, key benefit, primary competitor and differentiation", "It is part of the Scrum Guide", "It is used only in the Sprint Review"],
+    answer: 1,
+    why: "Filled in, it results in a complete product vision statement." },
+  { q: "Which parts does the Product Vision Board contain?",
+    options: ["A vision statement and four columns: end user, needs/problems, product and business goals", "A Sprint Goal and the Definition of Done", "A timeline of Sprints", "A list of stakeholders and their power"],
+    answer: 0,
+    why: "The vision statement on top answers why you are building the product." },
+  { q: "Who is accountable for creating clear Product Backlog items?",
+    options: ["The Developers", "The Scrum Master", "The stakeholders", "The Product Owner"],
+    answer: 3,
+    why: "Clear items avoid misunderstandings between what the Product Owner wants and what the Developers present at the end of a Sprint." },
+  { q: "What does the lecturer recommend for the title of a Product Backlog item?",
+    options: ["A long, detailed description", "Only a number", "A short title with a prefix showing the function or cluster, like 'Checkout / Enable guest checkout'", "No title is needed"],
+    answer: 2,
+    why: "A prefix helps when your tool has no labels but you still want to see what an item is relevant for." },
+  { q: "Does Scrum require user stories?",
+    options: ["Yes, for every item", "Yes, but only the Product Owner writes them", "Yes, for items above 5 story points", "No, but they are useful to express a requirement from the end user's perspective in one sentence"],
+    answer: 3,
+    why: "The format is: As a (type of user), I want to (activity), so that (benefit/value)." },
+  { q: "Which format do acceptance criteria follow in the lecture?",
+    options: ["Given (context), when (activity/event), then (expected result)", "As a, I want to, so that", "For, who, unlike", "Plan, do, check, act"],
+    answer: 0,
+    why: "Example: given the user is logged in, when clicking the button to add a product to the cart, then express checkout should be displayed." },
+  { q: "Who defines the Definition of Done that appears in a Product Backlog item template?",
+    options: ["It is predefined by the organization as a minimum and can be extended by the Developers", "Only the Product Owner", "Only the stakeholders", "It is different and new for each item"],
+    answer: 0,
+    why: "For some items extra points may be added, but for most items it is the same." },
+  { q: "The Product Owner cannot answer important questions in Sprint Planning. What can the Scrum Master suggest?",
+    options: ["Cancel the Sprint", "Add a regular Product Backlog refinement session", "Skip the Sprint Review", "Move the Product Owner role to a Developer"],
+    answer: 1,
+    why: "Refinement gives the Product Owner time to clarify open questions before Sprint Planning." },
+  { q: "Is Product Backlog refinement an official Scrum event?",
+    options: ["Yes, it is the sixth Scrum event", "Yes, it replaces the Daily Scrum", "No, it is a common practice, but not an official Scrum event", "Yes, but only for large teams"],
+    answer: 2,
+    why: "The Scrum Guide does not describe it as an event. Remember this for the exam." },
+  { q: "Which is NOT an advantage of a refinement session before Sprint Planning?",
+    options: ["Less time spent on open questions in Sprint Planning", "Less uncertainty about the Product Backlog items in the Sprint", "The Product Owner has time to clarify open questions beforehand", "The Sprint Goal is fixed in advance without the Developers"],
+    answer: 3,
+    why: "The Sprint Goal is still created by the whole Scrum Team in Sprint Planning." },
+  { q: "In the lecturer's experience, who attends a Product Backlog refinement session?",
+    options: ["Only the Product Owner", "Product Owner and Developers (not necessarily all of them); the Scrum Master and stakeholders are optional", "Only the stakeholders", "The whole company"],
+    answer: 1,
+    why: "The Product Owner presents the items and answers questions. The Scrum Master can observe the collaboration, and experts can join to refine specific items." }
+];
+
+const $ = id => document.getElementById(id);
+const letters = "ABCD";
+let pool = [], idx = 0, results = [];
+
+function start(list) {
+  pool = list.slice(); idx = 0; results = [];
+  $("result").hidden = true; $("quiz").hidden = false;
+  show();
+}
+
+function show() {
+  const item = pool[idx];
+  $("count").textContent = "Question " + (idx + 1) + " of " + pool.length;
+  $("fill").style.width = (idx / pool.length * 100) + "%";
+  $("question").textContent = item.q;
+  $("feedback").hidden = true; $("next").hidden = true;
+  const ul = $("options"); ul.innerHTML = "";
+  item.options.forEach((text, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    b.innerHTML = '<span class="letter">' + letters[i] + '</span><span></span>';
+    b.lastChild.textContent = text;
+    b.addEventListener("click", () => choose(i));
+    li.appendChild(b); ul.appendChild(li);
+  });
+}
+
+function choose(i) {
+  const item = pool[idx], right = i === item.answer;
+  results.push({ item, right });
+  [...$("options").querySelectorAll(".opt")].forEach((b, n) => {
+    b.disabled = true;
+    if (n === item.answer) b.classList.add("correct");
+    else if (n === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const fb = $("feedback");
+  fb.className = "feedback " + (right ? "ok" : "bad");
+  fb.innerHTML = "<strong></strong><p></p>";
+  fb.firstChild.textContent = right ? "Correct" : "Wrong. The answer is " + letters[item.answer] + ".";
+  fb.lastChild.textContent = item.why;
+  fb.hidden = false;
+  $("fill").style.width = ((idx + 1) / pool.length * 100) + "%";
+  const next = $("next");
+  next.textContent = idx === pool.length - 1 ? "See results" : "Next question";
+  next.hidden = false; next.focus();
+}
+
+$("next").addEventListener("click", () => {
+  if (idx === pool.length - 1) return finish();
+  idx++; show();
+});
+
+function finish() {
+  $("quiz").hidden = true; $("result").hidden = false;
+  const got = results.filter(r => r.right).length, total = results.length;
+  $("score").textContent = got + " / " + total;
+  const pct = got / total;
+  $("verdict").textContent = pct === 1 ? "Perfect score. Move on to the next chapter."
+    : pct >= 0.8 ? "Solid. Review the questions you missed below."
+    : "Re-read the chapter notes, then retry the questions you missed.";
+  const ul = $("review"); ul.innerHTML = "";
+  results.forEach(r => {
+    const li = document.createElement("li");
+    li.className = r.right ? "ok" : "bad";
+    li.textContent = (r.right ? "Correct: " : "Missed: ") + r.item.q;
+    if (!r.right) {
+      const s = document.createElement("small");
+      s.textContent = "Answer: " + r.item.options[r.item.answer];
+      li.appendChild(s);
+    }
+    ul.appendChild(li);
+  });
+  const missed = results.filter(r => !r.right).map(r => r.item);
+  $("retryMissed").hidden = missed.length === 0;
+  $("retryMissed").onclick = () => start(missed);
+  window.scrollTo(0, 0);
+}
+
+$("restart").addEventListener("click", () => start(QUESTIONS));
+start(QUESTIONS);
+</script>
+</body>
+</html>

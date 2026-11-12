@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSM I Practice Quiz: Chapters 5 to 8</title>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f5f2fc; --line: #d9d3ee;
+    --text: #2e3a4f; --muted: #6b7a90;
+    --accent: #5b4b9a; --accent-tint: #e6e0f8; --on-accent: #ffffff;
+    --ok: #2f7d5b; --ok-tint: #ddf3e8;
+    --bad: #a8465e; --bad-tint: #fbe0e6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17161d; --surface: #201f29; --line: #3a3750;
+      --text: #e7e8ee; --muted: #9aa3b5;
+      --accent: #a99bea; --accent-tint: #2c2745; --on-accent: #17161d;
+      --ok: #6cc9a0; --ok-tint: #17302a;
+      --bad: #f08aa3; --bad-tint: #3a1f29;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { margin-bottom: 24px; }
+  .tag { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  h1 { margin: 0; font-size: 26px; line-height: 1.25; }
+  .progress { display: flex; align-items: center; gap: 12px; margin: 20px 0 24px; font-size: 14px; color: var(--muted); }
+  .bar { flex: 1; height: 6px; background: var(--accent-tint); border-radius: 3px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+  .q { margin: 0 0 18px; font-size: 20px; line-height: 1.4; font-weight: 600; }
+  .options { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .opt {
+    width: 100%; text-align: left; padding: 13px 16px; font: inherit; color: inherit;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .opt:disabled { cursor: default; }
+  .letter { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-tint); color: var(--accent);
+            font-size: 13px; font-weight: 700; display: grid; place-items: center; margin-top: 1px; }
+  .opt.correct { background: var(--ok-tint); border-color: var(--ok); }
+  .opt.correct .letter { background: var(--ok); color: var(--on-accent); }
+  .opt.wrong { background: var(--bad-tint); border-color: var(--bad); }
+  .opt.wrong .letter { background: var(--bad); color: var(--on-accent); }
+  .opt.dim { opacity: .55; }
+  .feedback { margin-top: 18px; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-tint); border-radius: 0 8px 8px 0; }
+  .feedback.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .feedback.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .feedback strong { display: block; margin-bottom: 2px; }
+  .feedback.ok strong { color: var(--ok); }
+  .feedback.bad strong { color: var(--bad); }
+  .feedback p { margin: 0; }
+  button.primary, button.secondary {
+    font: inherit; font-weight: 600; padding: 11px 22px; border-radius: 8px; cursor: pointer; border: 1.5px solid var(--accent);
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); }
+  button.secondary { background: transparent; color: var(--accent); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .score { font-size: 40px; font-weight: 700; color: var(--accent); margin: 4px 0 2px; }
+  .review { margin: 24px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .review li { padding: 10px 14px; border-radius: 8px; border-left: 4px solid; font-size: 15px; }
+  .review li.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .review li.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .review small { display: block; color: var(--muted); margin-top: 2px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="tag">PSM I | Knowledge check</p>
+    <h1>9. PSM I Practice Quiz</h1>
+  </header>
+
+  <section id="quiz" aria-live="polite">
+    <div class="progress"><span id="count"></span><div class="bar"><span id="fill"></span></div></div>
+    <h2 class="q" id="question"></h2>
+    <ul class="options" id="options"></ul>
+    <div id="feedback" class="feedback" hidden></div>
+    <div class="actions"><button class="primary" id="next" hidden>Next question</button></div>
+  </section>
+
+  <section id="result" hidden>
+    <p class="tag">Result</p>
+    <div class="score" id="score"></div>
+    <p id="verdict"></p>
+    <ul class="review" id="review"></ul>
+    <div class="actions">
+      <button class="primary" id="retryMissed" hidden>Retry missed questions</button>
+      <button class="secondary" id="restart">Restart quiz</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// To reuse for another chapter, edit only this array (and the <title>/<h1> above).
+// answer = index of the correct option in "options".
+const QUESTIONS = [
+  { q: "Which of the following is NOT an accountability of a Scrum Team?",
+    options: ["Product Owner", "Scrum Master", "Project Manager", "Developers"],
+    answer: 2,
+    why: "A Scrum Team consists of one Product Owner, one Scrum Master and Developers. A project manager can exist outside the team only as a stakeholder." },
+  { q: "How many Product Owners does a Scrum Team have for one product?",
+    options: ["One per Developer", "One, per product and per Product Backlog", "Two, to share the workload", "As many as there are stakeholders"],
+    answer: 1,
+    why: "Several Product Owners could create conflicts when prioritizing the team's work." },
+  { q: "The Product Owner lets a Developer create several Product Backlog items. Who is accountable for them?",
+    options: ["The Developer who created them", "The Scrum Master", "The whole Scrum Team equally", "The Product Owner, who remains accountable even when delegating"],
+    answer: 3,
+    why: "The Product Owner may delegate work but remains accountable." },
+  { q: "A new Scrum Team resists the Daily Scrum. What should the Scrum Master do?",
+    options: ["Force the Developers to attend", "Coach the team on the benefits of the Daily Scrum without forcing anyone", "Cancel the Daily Scrum", "Moderate the Daily Scrum every day"],
+    answer: 1,
+    why: "The Scrum Master role is a coaching role. They teach and help, but do not force anyone." },
+  { q: "Who decides how a Product Backlog item is turned into an Increment?",
+    options: ["The Product Owner", "The Scrum Master", "The Developers, because the Scrum Team is self-managing", "The stakeholders"],
+    answer: 2,
+    why: "Self-managing means the team decides what, when and how. Nobody else tells the Developers how to turn items into Increments." },
+  { q: "Which statement about team size is correct?",
+    options: ["Exactly seven people", "At least twelve people", "Ten or fewer people, including the Product Owner and the Scrum Master", "No limit"],
+    answer: 2,
+    why: "A Scrum Team is small enough to stay nimble and large enough to complete significant work within a Sprint." },
+  { q: "How many Scrum events are there?",
+    options: ["Four", "Five, including the Sprint itself", "Six, including Product Backlog refinement", "Three"],
+    answer: 1,
+    why: "Sprint, Sprint Planning, Daily Scrum, Sprint Review and Sprint Retrospective. Refinement is not a Scrum event." },
+  { q: "What happens between two Sprints?",
+    options: ["A planning break", "A Sprint Zero", "Nothing: a new Sprint starts immediately after the previous one ends", "A gap decided by the Scrum Master"],
+    answer: 2,
+    why: "There is no time between two Sprints." },
+  { q: "What is the maximum length of a Sprint?",
+    options: ["Two weeks", "One month", "Six weeks", "There is no maximum"],
+    answer: 1,
+    why: "A Sprint is a timebox of one month or less." },
+  { q: "When can a Sprint be cancelled before its timebox is over?",
+    options: ["When the Developers think they cannot finish the work", "When a stakeholder asks for it", "When the Sprint Goal becomes obsolete", "When the Scrum Master decides"],
+    answer: 2,
+    why: "Only if the Sprint Goal becomes obsolete. Only the Product Owner has the authority to cancel a Sprint." },
+  { q: "The Developers want to remove part of the Sprint scope during the Sprint. What is correct?",
+    options: ["They may do it on their own", "They must renegotiate the Sprint scope with the Product Owner", "It is forbidden to change the scope after Sprint Planning", "They must wait until the Sprint Review"],
+    answer: 1,
+    why: "Scope can be renegotiated as more is learned, but never by the Developers alone." },
+  { q: "What are the three topics of Sprint Planning?",
+    options: ["Who, when, where", "Scope, budget, deadline", "Backlog, burndown, velocity", "Why (Sprint Goal), what (items) and how (plan)"],
+    answer: 3,
+    why: "Together they form the Sprint Backlog." },
+  { q: "The Product Owner wants the Developers to take more Product Backlog items into the Sprint. What is true?",
+    options: ["The Product Owner can force them", "The Scrum Master can overrule the Developers", "No one can force the Developers to overcommit", "The stakeholders decide"],
+    answer: 2,
+    why: "The Developers select what they can commit to deliver." },
+  { q: "What is the maximum timebox of Sprint Planning for a one-month Sprint?",
+    options: ["8 hours", "4 hours", "6 hours", "2 hours"],
+    answer: 0,
+    why: "Timeboxes may be shorter for shorter Sprints, never longer." },
+  { q: "Which statement about the Daily Scrum is correct?",
+    options: ["It is a 30-minute meeting for the whole Scrum Team", "It is a 15-minute event for the Developers", "It is a status meeting for the Product Owner", "It is held weekly"],
+    answer: 1,
+    why: "It is held at the same time and place every working day of the Sprint." },
+  { q: "The Scrum Master is working on a Sprint Backlog item and attends the Daily Scrum. In which role does the Scrum Master participate?",
+    options: ["As the Scrum Master", "As a stakeholder", "As a Developer", "As a guest only"],
+    answer: 2,
+    why: "If the Product Owner or Scrum Master work on Sprint Backlog items, they participate as Developers." },
+  { q: "Which statement about the Daily Scrum structure is NOT correct?",
+    options: ["The Developers choose the structure and technique", "It must produce an actionable plan for the next day of work", "It must focus on progress toward the Sprint Goal", "Every Developer must answer the three questions prescribed by the Scrum Guide"],
+    answer: 3,
+    why: "The three questions are a typical practice, not a rule. The team is self-managing." },
+  { q: "Which statement about the Sprint Review is correct?",
+    options: ["It is a working meeting where the Scrum Team and stakeholders inspect the outcome and collaborate on what to do next", "It is a one-way presentation followed by sign-off", "It is a meeting for the Product Owner only", "It is where the Definition of Done is adapted"],
+    answer: 0,
+    why: "The Product Backlog may be adjusted. The Sprint Review is a maximum of 4 hours for a one-month Sprint." },
+  { q: "In which event is the Definition of Done adapted, if needed?",
+    options: ["Sprint Planning", "Daily Scrum", "Sprint Review", "Sprint Retrospective"],
+    answer: 3,
+    why: "The Retrospective inspects individuals, interactions, processes, tools and the Definition of Done." },
+  { q: "The Retrospective produces improvement ideas. What is true about the next Sprint Backlog?",
+    options: ["Adding them is mandatory", "They may be added, but there is no obligation", "Adding them is forbidden", "Only the Product Owner may add them"],
+    answer: 1,
+    why: "The Scrum Team identifies the most helpful changes, but adding them to the Sprint Backlog is optional." },
+  { q: "By which criterion is the Product Backlog ordered?",
+    options: ["Effort", "Order of arrival", "Value for the product and its customers", "Size"],
+    answer: 2,
+    why: "The Product Owner manages and orders the Product Backlog." },
+  { q: "When is the Product Backlog complete?",
+    options: ["After the first Sprint", "When stakeholders approve it", "When it covers the whole Product Goal", "Never"],
+    answer: 3,
+    why: "It keeps changing with the product and its environment." },
+  { q: "What is the Product Goal?",
+    options: ["A future state of the product that serves as a target for the Scrum Team to plan against", "The list of tasks for the Sprint", "The company vision", "The quality criteria for an Increment"],
+    answer: 0,
+    why: "The Product Goal is the commitment of the Product Backlog and the Product Owner develops and communicates it." },
+  { q: "What does the Sprint Backlog consist of?",
+    options: ["The whole Product Backlog", "The Increment and the Definition of Done", "The Sprint Goal, the selected Product Backlog items and a plan to deliver them", "The Product Goal and the velocity"],
+    answer: 2,
+    why: "Why, what and how, created in Sprint Planning." },
+  { q: "Which artifact and commitment pairs are correct?",
+    options: ["Product Backlog / Sprint Goal", "Sprint Backlog / Product Goal", "Increment / Product Goal", "Increment / Definition of Done"],
+    answer: 3,
+    why: "Product Backlog / Product Goal, Sprint Backlog / Sprint Goal, Increment / Definition of Done." },
+  { q: "Can an Increment be released before the Sprint Review?",
+    options: ["Yes, as soon as it meets the Definition of Done", "No, the Sprint Review is a release gate", "Only with stakeholder approval", "Only at the end of the Sprint"],
+    answer: 0,
+    why: "The Sprint Review is never a gate to release value. The Product Owner decides whether and when to release." },
+  { q: "A Product Backlog item does not meet the Definition of Done at the end of the Sprint. What happens?",
+    options: ["It is shown at the Sprint Review as work in progress", "It is automatically moved to the next Sprint", "It is released with a warning", "It returns to the Product Backlog, and the next Sprint Planning decides"],
+    answer: 3,
+    why: "It cannot be released or presented at the Sprint Review." },
+  { q: "Who creates the Definition of Done?",
+    options: ["The Scrum Team, unless the organization already provides one, which is then the minimum", "Always the Product Owner", "Always the stakeholders", "Always the Scrum Master"],
+    answer: 0,
+    why: "If the organization has a standard, the team may add to it but not go below it." },
+  { q: "Three Scrum Teams work on the same product. How many Product Owners are needed?",
+    options: ["Three", "Two", "One", "None"],
+    answer: 2,
+    why: "One product means one Product Backlog and one Product Owner." },
+  { q: "Which statement about scaled Scrum with several teams on one product is NOT correct?",
+    options: ["There is one Product Backlog", "Each team has its own Sprint Backlog", "The teams create one integrated Increment", "Each team defines its own separate Definition of Done"],
+    answer: 3,
+    why: "All teams must respect a shared Definition of Done so their work can be integrated." },
+  { q: "Teams on the same product use different Sprint lengths and start dates. What does the Scrum Guide say?",
+    options: ["It is forbidden", "It is acceptable, since the Scrum Guide says nothing about it", "It is only allowed with two teams", "It requires approval from the Scrum Masters"],
+    answer: 1,
+    why: "It adds complexity and dependencies, and the goal of an integrated Increment remains." }
+];
+
+const $ = id => document.getElementById(id);
+const letters = "ABCD";
+let pool = [], idx = 0, results = [];
+
+function start(list) {
+  pool = list.slice(); idx = 0; results = [];
+  $("result").hidden = true; $("quiz").hidden = false;
+  show();
+}
+
+function show() {
+  const item = pool[idx];
+  $("count").textContent = "Question " + (idx + 1) + " of " + pool.length;
+  $("fill").style.width = (idx / pool.length * 100) + "%";
+  $("question").textContent = item.q;
+  $("feedback").hidden = true; $("next").hidden = true;
+  const ul = $("options"); ul.innerHTML = "";
+  item.options.forEach((text, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    b.innerHTML = '<span class="letter">' + letters[i] + '</span><span></span>';
+    b.lastChild.textContent = text;
+    b.addEventListener("click", () => choose(i));
+    li.appendChild(b); ul.appendChild(li);
+  });
+}
+
+function choose(i) {
+  const item = pool[idx], right = i === item.answer;
+  results.push({ item, right });
+  [...$("options").querySelectorAll(".opt")].forEach((b, n) => {
+    b.disabled = true;
+    if (n === item.answer) b.classList.add("correct");
+    else if (n === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const fb = $("feedback");
+  fb.className = "feedback " + (right ? "ok" : "bad");
+  fb.innerHTML = "<strong></strong><p></p>";
+  fb.firstChild.textContent = right ? "Correct" : "Wrong. The answer is " + letters[item.answer] + ".";
+  fb.lastChild.textContent = item.why;
+  fb.hidden = false;
+  $("fill").style.width = ((idx + 1) / pool.length * 100) + "%";
+  const next = $("next");
+  next.textContent = idx === pool.length - 1 ? "See results" : "Next question";
+  next.hidden = false; next.focus();
+}
+
+$("next").addEventListener("click", () => {
+  if (idx === pool.length - 1) return finish();
+  idx++; show();
+});
+
+function finish() {
+  $("quiz").hidden = true; $("result").hidden = false;
+  const got = results.filter(r => r.right).length, total = results.length;
+  $("score").textContent = got + " / " + total;
+  const pct = got / total;
+  $("verdict").textContent = pct === 1 ? "Perfect score. Move on to the next chapter."
+    : pct >= 0.8 ? "Solid. Review the questions you missed below."
+    : "Re-read the chapter notes, then retry the questions you missed.";
+  const ul = $("review"); ul.innerHTML = "";
+  results.forEach(r => {
+    const li = document.createElement("li");
+    li.className = r.right ? "ok" : "bad";
+    li.textContent = (r.right ? "Correct: " : "Missed: ") + r.item.q;
+    if (!r.right) {
+      const s = document.createElement("small");
+      s.textContent = "Answer: " + r.item.options[r.item.answer];
+      li.appendChild(s);
+    }
+    ul.appendChild(li);
+  });
+  const missed = results.filter(r => !r.right).map(r => r.item);
+  $("retryMissed").hidden = missed.length === 0;
+  $("retryMissed").onclick = () => start(missed);
+  window.scrollTo(0, 0);
+}
+
+$("restart").addEventListener("click", () => start(QUESTIONS));
+start(QUESTIONS);
+</script>
+</body>
+</html>

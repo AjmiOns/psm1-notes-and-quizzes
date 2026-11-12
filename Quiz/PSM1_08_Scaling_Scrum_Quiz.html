@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSM I Quiz 8: Scaling Scrum</title>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f5f2fc; --line: #d9d3ee;
+    --text: #2e3a4f; --muted: #6b7a90;
+    --accent: #5b4b9a; --accent-tint: #e6e0f8; --on-accent: #ffffff;
+    --ok: #2f7d5b; --ok-tint: #ddf3e8;
+    --bad: #a8465e; --bad-tint: #fbe0e6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17161d; --surface: #201f29; --line: #3a3750;
+      --text: #e7e8ee; --muted: #9aa3b5;
+      --accent: #a99bea; --accent-tint: #2c2745; --on-accent: #17161d;
+      --ok: #6cc9a0; --ok-tint: #17302a;
+      --bad: #f08aa3; --bad-tint: #3a1f29;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { margin-bottom: 24px; }
+  .tag { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  h1 { margin: 0; font-size: 26px; line-height: 1.25; }
+  .progress { display: flex; align-items: center; gap: 12px; margin: 20px 0 24px; font-size: 14px; color: var(--muted); }
+  .bar { flex: 1; height: 6px; background: var(--accent-tint); border-radius: 3px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+  .q { margin: 0 0 18px; font-size: 20px; line-height: 1.4; font-weight: 600; }
+  .options { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .opt {
+    width: 100%; text-align: left; padding: 13px 16px; font: inherit; color: inherit;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .opt:disabled { cursor: default; }
+  .letter { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-tint); color: var(--accent);
+            font-size: 13px; font-weight: 700; display: grid; place-items: center; margin-top: 1px; }
+  .opt.correct { background: var(--ok-tint); border-color: var(--ok); }
+  .opt.correct .letter { background: var(--ok); color: var(--on-accent); }
+  .opt.wrong { background: var(--bad-tint); border-color: var(--bad); }
+  .opt.wrong .letter { background: var(--bad); color: var(--on-accent); }
+  .opt.dim { opacity: .55; }
+  .feedback { margin-top: 18px; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-tint); border-radius: 0 8px 8px 0; }
+  .feedback.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .feedback.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .feedback strong { display: block; margin-bottom: 2px; }
+  .feedback.ok strong { color: var(--ok); }
+  .feedback.bad strong { color: var(--bad); }
+  .feedback p { margin: 0; }
+  button.primary, button.secondary {
+    font: inherit; font-weight: 600; padding: 11px 22px; border-radius: 8px; cursor: pointer; border: 1.5px solid var(--accent);
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); }
+  button.secondary { background: transparent; color: var(--accent); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .score { font-size: 40px; font-weight: 700; color: var(--accent); margin: 4px 0 2px; }
+  .review { margin: 24px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .review li { padding: 10px 14px; border-radius: 8px; border-left: 4px solid; font-size: 15px; }
+  .review li.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .review li.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .review small { display: block; color: var(--muted); margin-top: 2px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="tag">PSM I | Knowledge check</p>
+    <h1>8. Scaling Scrum</h1>
+  </header>
+
+  <section id="quiz" aria-live="polite">
+    <div class="progress"><span id="count"></span><div class="bar"><span id="fill"></span></div></div>
+    <h2 class="q" id="question"></h2>
+    <ul class="options" id="options"></ul>
+    <div id="feedback" class="feedback" hidden></div>
+    <div class="actions"><button class="primary" id="next" hidden>Next question</button></div>
+  </section>
+
+  <section id="result" hidden>
+    <p class="tag">Result</p>
+    <div class="score" id="score"></div>
+    <p id="verdict"></p>
+    <ul class="review" id="review"></ul>
+    <div class="actions">
+      <button class="primary" id="retryMissed" hidden>Retry missed questions</button>
+      <button class="secondary" id="restart">Restart quiz</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// To reuse for another chapter, edit only this array (and the <title>/<h1> above).
+// answer = index of the correct option in "options".
+const QUESTIONS = [
+  { q: "Why would an organization add more Scrum Teams to a product?",
+    options: ["Because a Scrum Team may not have more than five members", "To increase output without making a single team larger than about 10 people", "Because every product needs at least three teams", "To replace the Product Owner with several Product Owners"],
+    answer: 1,
+    why: "A Scrum Team should have 10 or fewer members. To speed up the output, additional Scrum Teams can be added to the same product." },
+  { q: "Three Scrum Teams work on the same product. How many Product Owners are needed?",
+    options: ["Three, one per team", "Two, to share the workload", "One for all teams", "As many as there are Sprint Backlogs"],
+    answer: 2,
+    why: "One product means one Product Backlog and therefore one Product Owner. Several Product Owners could conflict over what has the highest value." },
+  { q: "Which accountabilities are still required in scaled Scrum?",
+    options: ["Only the Product Owner and the Developers", "Product Owner, Scrum Master and Developers, as in single-team Scrum", "A Scrum Master and a program manager", "A Product Owner and a coordination team"],
+    answer: 1,
+    why: "The rules of Scrum still apply in scaled Scrum. Only the number of Product Owners differs: one for all teams." },
+  { q: "Multiple teams work on one product. How many Product Backlogs are there?",
+    options: ["One per team", "One per Developer", "Two: a main one and a shared one", "One single Product Backlog"],
+    answer: 3,
+    why: "All teams work on the same product, so there is one Product Backlog managed by one Product Owner." },
+  { q: "How many Sprint Backlogs exist when three teams work on the same product?",
+    options: ["One per team", "One shared Sprint Backlog", "One per Product Backlog item", "One per Sprint Goal and team combined"],
+    answer: 0,
+    why: "Each team works on different Product Backlog items and plans its Sprint in its own way, so each team has its own Sprint Backlog." },
+  { q: "What do the teams working on one product deliver at the end of a Sprint?",
+    options: ["One Increment per team, kept separate", "One integrated Increment created by all teams together", "Only the Increment of the largest team", "Whatever the Product Owner selects"],
+    answer: 1,
+    why: "Teams must create one integrated Increment at the end of the Sprint, not one separate Increment per team." },
+  { q: "Why must teams working on the same product share a Definition of Done?",
+    options: ["Because the Scrum Master of each team must agree on one", "Because the Product Owner needs to compare the teams' velocity", "Because stakeholders require it for each Sprint Review", "Because they create one integrated Increment, so everyone must understand what Done means"],
+    answer: 3,
+    why: "Since there is only one integrated Increment, all teams must respect a common Definition of Done that allows their work to be integrated." },
+  { q: "Does scaled Scrum have the same Scrum events as single-team Scrum?",
+    options: ["No, it adds a Scrum of Scrums event", "Yes: the Scrum Guide does not describe additional events or different handling for multiple teams", "No, only Sprint Planning and Sprint Review remain", "Yes, but the Daily Scrum is replaced by a weekly meeting"],
+    answer: 1,
+    why: "Frameworks like SAFe or Nexus add events, but they are not part of the Scrum framework or the exam." },
+  { q: "Teams working on the same product use different Sprint lengths and different start and end dates. What does the Scrum Guide say?",
+    options: ["That is not allowed: all teams must use the same Sprint length", "That is only allowed if the Scrum Masters agree", "That is acceptable, since the Scrum Guide says nothing about it", "That is only allowed for teams of fewer than five people"],
+    answer: 2,
+    why: "The Scrum Guide gives no rule on this. It does not change the goal of an integrated Increment, but different dates add complexity and dependencies." },
+  { q: "Which of the following is shared by all Scrum Teams working on one product?",
+    options: ["The Sprint Backlog", "The Developers", "The Scrum Master", "The Product Owner, the Product Backlog and the Definition of Done"],
+    answer: 3,
+    why: "One product means one Product Owner, one Product Backlog and one shared Definition of Done. The Sprint Backlog is per team." }
+];
+
+const $ = id => document.getElementById(id);
+const letters = "ABCD";
+let pool = [], idx = 0, results = [];
+
+function start(list) {
+  pool = list.slice(); idx = 0; results = [];
+  $("result").hidden = true; $("quiz").hidden = false;
+  show();
+}
+
+function show() {
+  const item = pool[idx];
+  $("count").textContent = "Question " + (idx + 1) + " of " + pool.length;
+  $("fill").style.width = (idx / pool.length * 100) + "%";
+  $("question").textContent = item.q;
+  $("feedback").hidden = true; $("next").hidden = true;
+  const ul = $("options"); ul.innerHTML = "";
+  item.options.forEach((text, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    b.innerHTML = '<span class="letter">' + letters[i] + '</span><span></span>';
+    b.lastChild.textContent = text;
+    b.addEventListener("click", () => choose(i));
+    li.appendChild(b); ul.appendChild(li);
+  });
+}
+
+function choose(i) {
+  const item = pool[idx], right = i === item.answer;
+  results.push({ item, right });
+  [...$("options").querySelectorAll(".opt")].forEach((b, n) => {
+    b.disabled = true;
+    if (n === item.answer) b.classList.add("correct");
+    else if (n === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const fb = $("feedback");
+  fb.className = "feedback " + (right ? "ok" : "bad");
+  fb.innerHTML = "<strong></strong><p></p>";
+  fb.firstChild.textContent = right ? "Correct" : "Wrong. The answer is " + letters[item.answer] + ".";
+  fb.lastChild.textContent = item.why;
+  fb.hidden = false;
+  $("fill").style.width = ((idx + 1) / pool.length * 100) + "%";
+  const next = $("next");
+  next.textContent = idx === pool.length - 1 ? "See results" : "Next question";
+  next.hidden = false; next.focus();
+}
+
+$("next").addEventListener("click", () => {
+  if (idx === pool.length - 1) return finish();
+  idx++; show();
+});
+
+function finish() {
+  $("quiz").hidden = true; $("result").hidden = false;
+  const got = results.filter(r => r.right).length, total = results.length;
+  $("score").textContent = got + " / " + total;
+  const pct = got / total;
+  $("verdict").textContent = pct === 1 ? "Perfect score. Move on to the next chapter."
+    : pct >= 0.8 ? "Solid. Review the questions you missed below."
+    : "Re-read the chapter notes, then retry the questions you missed.";
+  const ul = $("review"); ul.innerHTML = "";
+  results.forEach(r => {
+    const li = document.createElement("li");
+    li.className = r.right ? "ok" : "bad";
+    li.textContent = (r.right ? "Correct: " : "Missed: ") + r.item.q;
+    if (!r.right) {
+      const s = document.createElement("small");
+      s.textContent = "Answer: " + r.item.options[r.item.answer];
+      li.appendChild(s);
+    }
+    ul.appendChild(li);
+  });
+  const missed = results.filter(r => !r.right).map(r => r.item);
+  $("retryMissed").hidden = missed.length === 0;
+  $("retryMissed").onclick = () => start(missed);
+  window.scrollTo(0, 0);
+}
+
+$("restart").addEventListener("click", () => start(QUESTIONS));
+start(QUESTIONS);
+</script>
+</body>
+</html>

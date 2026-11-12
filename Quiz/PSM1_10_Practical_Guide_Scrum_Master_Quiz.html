@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSM I Quiz 10: Practical Guide, Serving the Scrum Team</title>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f8f6fd; --line: #e3def4;
+    --text: #2e3a4f; --muted: #6b7a90;
+    --accent: #7d6cc0; --accent-tint: #ebe6f9; --on-accent: #ffffff;
+    --ok: #4a9c78; --ok-tint: #e1f5ec;
+    --bad: #c06a82; --bad-tint: #fce6ec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17161d; --surface: #201f29; --line: #3a3750;
+      --text: #e7e8ee; --muted: #9aa3b5;
+      --accent: #a99bea; --accent-tint: #2c2745; --on-accent: #17161d;
+      --ok: #6cc9a0; --ok-tint: #17302a;
+      --bad: #f08aa3; --bad-tint: #3a1f29;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { margin-bottom: 24px; }
+  .tag { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  h1 { margin: 0; font-size: 26px; line-height: 1.25; }
+  .progress { display: flex; align-items: center; gap: 12px; margin: 20px 0 24px; font-size: 14px; color: var(--muted); }
+  .bar { flex: 1; height: 6px; background: var(--accent-tint); border-radius: 3px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+  .q { margin: 0 0 18px; font-size: 20px; line-height: 1.4; font-weight: 600; }
+  .options { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .opt {
+    width: 100%; text-align: left; padding: 13px 16px; font: inherit; color: inherit;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .opt:disabled { cursor: default; }
+  .letter { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-tint); color: var(--accent);
+            font-size: 13px; font-weight: 700; display: grid; place-items: center; margin-top: 1px; }
+  .opt.correct { background: var(--ok-tint); border-color: var(--ok); }
+  .opt.correct .letter { background: var(--ok); color: var(--on-accent); }
+  .opt.wrong { background: var(--bad-tint); border-color: var(--bad); }
+  .opt.wrong .letter { background: var(--bad); color: var(--on-accent); }
+  .opt.dim { opacity: .55; }
+  .feedback { margin-top: 18px; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-tint); border-radius: 0 8px 8px 0; }
+  .feedback.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .feedback.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .feedback strong { display: block; margin-bottom: 2px; }
+  .feedback.ok strong { color: var(--ok); }
+  .feedback.bad strong { color: var(--bad); }
+  .feedback p { margin: 0; }
+  button.primary, button.secondary {
+    font: inherit; font-weight: 600; padding: 11px 22px; border-radius: 8px; cursor: pointer; border: 1.5px solid var(--accent);
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); }
+  button.secondary { background: transparent; color: var(--accent); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .score { font-size: 40px; font-weight: 700; color: var(--accent); margin: 4px 0 2px; }
+  .review { margin: 24px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .review li { padding: 10px 14px; border-radius: 8px; border-left: 4px solid; font-size: 15px; }
+  .review li.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .review li.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .review small { display: block; color: var(--muted); margin-top: 2px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="tag">PSM I | Knowledge check</p>
+    <h1>10. Practical Guide #1: Serving the Scrum Team</h1>
+  </header>
+
+  <section id="quiz" aria-live="polite">
+    <div class="progress"><span id="count"></span><div class="bar"><span id="fill"></span></div></div>
+    <h2 class="q" id="question"></h2>
+    <ul class="options" id="options"></ul>
+    <div id="feedback" class="feedback" hidden></div>
+    <div class="actions"><button class="primary" id="next" hidden>Next question</button></div>
+  </section>
+
+  <section id="result" hidden>
+    <p class="tag">Result</p>
+    <div class="score" id="score"></div>
+    <p id="verdict"></p>
+    <ul class="review" id="review"></ul>
+    <div class="actions">
+      <button class="primary" id="retryMissed" hidden>Retry missed questions</button>
+      <button class="secondary" id="restart">Restart quiz</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// To reuse for another chapter, edit only this array (and the <title>/<h1> above).
+// answer = index of the correct option in "options".
+const QUESTIONS = [
+  { q: "Why does a Scrum Team need an estimation process?",
+    options: ["Because Scrum requires every item to be estimated in hours", "To decide which Product Backlog items fit in the Sprint Backlog without over- or under-committing", "To measure the performance of each Developer", "To prepare the Sprint Review"],
+    answer: 1,
+    why: "Sprint Planning needs the estimated effort of the items and the average effort the Developers can deliver in a Sprint." },
+  { q: "What are story points?",
+    options: ["A unit of measure for the overall effort needed to implement a Product Backlog item", "Points awarded to Developers for finished work", "A fixed number of hours per item", "The value an item brings to the customer"],
+    answer: 0,
+    why: "The higher the value, the more effort or complexity the item has." },
+  { q: "Story points are best described as...",
+    options: ["Absolute values, measured in hours", "Relative values, compared to a reference item", "Values assigned by the Product Owner alone", "Values that never change"],
+    answer: 1,
+    why: "A story point describes how much effort an item needs compared to a reference story." },
+  { q: "What is velocity?",
+    options: ["The number of Developers in the team", "The speed of Sprint Planning", "The average number of story points the team delivered in the last Sprints", "The number of items in the Product Backlog"],
+    answer: 2,
+    why: "Velocity helps the team forecast how much it can do in the next Sprint." },
+  { q: "What is the expected effect on velocity when new Developers join a team?",
+    options: ["It rises immediately", "It stays exactly the same", "It drops to zero", "It decreases for a short period (one or two Sprints) and then rises again"],
+    answer: 3,
+    why: "The new Developers have to be onboarded. Afterwards velocity should slowly rise, hopefully above the starting level." },
+  { q: "The team's velocity is 26 story points. The first three Product Backlog items total 26 story points. What is the conclusion?",
+    options: ["The three items can be added to the Sprint Backlog", "Only the first two items fit", "The team must add a fourth item", "The Product Owner must lower the estimates"],
+    answer: 0,
+    why: "The estimated effort equals the average velocity, so the three items fit the next Sprint." },
+  { q: "How does a team start estimating with story points?",
+    options: ["By assigning random numbers to all items", "By asking the Product Owner for the values", "By picking a small item as a reference story and comparing the other items with it", "By measuring the hours of the last Sprint"],
+    answer: 2,
+    why: "For example the reference story gets 1 story point, and an item needing double the effort gets 2." },
+  { q: "Which set of numbers do successful Scrum Teams typically use for story points?",
+    options: ["Any number from 1 to 100", "The Fibonacci sequence", "Only even numbers", "Multiples of ten"],
+    answer: 1,
+    why: "Fibonacci: each number is the sum of the two before it (0, 1, 1, 2, 3, 5, 8...). The reasons are not required for the exam." },
+  { q: "Does Scrum require the use of story points?",
+    options: ["Yes, they are mandatory", "Yes, but only for teams of more than five people", "No, they are a good way to estimate, but T-shirt sizes or other numbers can be used", "Yes, as part of the Definition of Done"],
+    answer: 2,
+    why: "The Scrum Guide does not require story points." },
+  { q: "In planning poker, who reads out the Product Backlog items one by one?",
+    options: ["The Scrum Master", "The Product Owner", "A stakeholder", "A randomly chosen Developer"],
+    answer: 1,
+    why: "The team then discusses each item with the Product Owner until everyone understands it." },
+  { q: "When are the planning poker cards revealed?",
+    options: ["One after another, starting with the most senior member", "After the Product Owner shows their estimate", "At the same time, once everyone has chosen a card", "Only after the Scrum Master approves"],
+    answer: 2,
+    why: "Revealing at the same time means nobody is influenced by the estimates of the others." },
+  { q: "After the cards are revealed, who typically explains their choice?",
+    options: ["The members who chose the highest and the lowest values", "Only the Product Owner", "The members who chose the middle value", "Nobody, the lowest value is taken"],
+    answer: 0,
+    why: "This makes sure everyone's opinion is taken into account in the estimate." },
+  { q: "Two Developers keep choosing different numbers in planning poker. What does the lecture recommend?",
+    options: ["Ask the Scrum Master to decide", "Select the higher number and continue with the next item", "Select the lower number and continue", "Stop the Sprint Planning"],
+    answer: 1,
+    why: "This saves time. Otherwise the estimation is repeated until all members choose the same number." },
+  { q: "You join an existing Scrum Team as a Scrum Master. What should you do on your first days?",
+    options: ["Give the team advice on how to improve right away", "Reorganize the team according to Scrum", "Watch, listen and ask specific questions, and take notes", "Replace the Product Owner"],
+    answer: 2,
+    why: "Do not take action, give advice or make judgments yet. Be rather passive, introduce yourself and take part in the Daily Scrum." },
+  { q: "Which of the following is NOT something to observe in the Daily Scrum on your first day?",
+    options: ["Who participates and who is missing", "Whether it is a status report or real collaboration toward the Sprint Goal", "Conflicts between team members", "Which Developer deserves a bonus"],
+    answer: 3,
+    why: "The goal is to understand how the team works, not to judge individuals." },
+  { q: "Why should a Scrum Master ask who the Product Owner is on the first day?",
+    options: ["Because teams often have several Product Owners or extra roles like project managers", "Because the Scrum Master reports to the Product Owner", "Because the Product Owner must approve the Scrum Master", "Because the Product Owner runs the Daily Scrum"],
+    answer: 0,
+    why: "You must find out who has which role, and whether the Product Owner works only part time on the team." },
+  { q: "Why is a shared product vision important for the team?",
+    options: ["It replaces the Sprint Goal", "It is needed to calculate velocity", "It gives a shared understanding of what and why, and helps everyone take daily micro-decisions", "It is required by the Definition of Done"],
+    answer: 2,
+    why: "It should be documented somewhere accessible for everyone. If it is missing, note it and discuss it with the Product Owner." },
+  { q: "What do the documented results of the last Sprint Retrospective tell the new Scrum Master?",
+    options: ["Only the team's velocity", "Whether Retrospectives take place, how often, and whether the team works on improvements", "Who is the best Developer", "Which items are in the Product Backlog"],
+    answer: 1,
+    why: "Missing action points or linked tickets show that the team is not really working on improving." },
+  { q: "Why should a Scrum Master look at the documented impediments (impediment backlog)?",
+    options: ["Because the Product Owner is accountable for them", "Because removing impediments is the Scrum Master's accountability", "Because Developers may not see them", "Because impediments are part of the Definition of Done"],
+    answer: 1,
+    why: "Go through them, understand them and think about possible solutions." },
+  { q: "Which first-day question shows you are a servant leader?",
+    options: ["How can I help immediately?", "Who is responsible for the delays?", "Why are you not following Scrum?", "When is my first bonus?"],
+    answer: 0,
+    why: "It shows you are willing to take over responsibility and to work actively with the team." },
+  { q: "Why is 'complete all items of the Sprint Backlog every Sprint' a poor definition of success?",
+    options: ["Because the Sprint Backlog is created by the Product Owner", "Because finishing every item is impossible", "Because the team may start to pick fewer and fewer items to be sure it finishes them", "Because it ignores the Definition of Done"],
+    answer: 2,
+    why: "Measuring success this way encourages under-commitment." },
+  { q: "Why is 'a high velocity' a poor definition of success?",
+    options: ["Teams may assign higher and higher story points to the items", "Velocity cannot be calculated", "Velocity only applies to the Product Owner", "High velocity always lowers quality"],
+    answer: 0,
+    why: "Velocity is an average of story points, which can be inflated through the estimates." },
+  { q: "According to the Scrum Guide, what is the best definition of success in Scrum?",
+    options: ["A high velocity", "All Sprint Backlog items completed", "The number of Increments released", "A higher level of value for the end user or customer"],
+    answer: 3,
+    why: "If the end user is happy and loves the product, the team was successful. Rising customer satisfaction means you are on the right way." }
+];
+
+const $ = id => document.getElementById(id);
+const letters = "ABCD";
+let pool = [], idx = 0, results = [];
+
+function start(list) {
+  pool = list.slice(); idx = 0; results = [];
+  $("result").hidden = true; $("quiz").hidden = false;
+  show();
+}
+
+function show() {
+  const item = pool[idx];
+  $("count").textContent = "Question " + (idx + 1) + " of " + pool.length;
+  $("fill").style.width = (idx / pool.length * 100) + "%";
+  $("question").textContent = item.q;
+  $("feedback").hidden = true; $("next").hidden = true;
+  const ul = $("options"); ul.innerHTML = "";
+  item.options.forEach((text, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    b.innerHTML = '<span class="letter">' + letters[i] + '</span><span></span>';
+    b.lastChild.textContent = text;
+    b.addEventListener("click", () => choose(i));
+    li.appendChild(b); ul.appendChild(li);
+  });
+}
+
+function choose(i) {
+  const item = pool[idx], right = i === item.answer;
+  results.push({ item, right });
+  [...$("options").querySelectorAll(".opt")].forEach((b, n) => {
+    b.disabled = true;
+    if (n === item.answer) b.classList.add("correct");
+    else if (n === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const fb = $("feedback");
+  fb.className = "feedback " + (right ? "ok" : "bad");
+  fb.innerHTML = "<strong></strong><p></p>";
+  fb.firstChild.textContent = right ? "Correct" : "Wrong. The answer is " + letters[item.answer] + ".";
+  fb.lastChild.textContent = item.why;
+  fb.hidden = false;
+  $("fill").style.width = ((idx + 1) / pool.length * 100) + "%";
+  const next = $("next");
+  next.textContent = idx === pool.length - 1 ? "See results" : "Next question";
+  next.hidden = false; next.focus();
+}
+
+$("next").addEventListener("click", () => {
+  if (idx === pool.length - 1) return finish();
+  idx++; show();
+});
+
+function finish() {
+  $("quiz").hidden = true; $("result").hidden = false;
+  const got = results.filter(r => r.right).length, total = results.length;
+  $("score").textContent = got + " / " + total;
+  const pct = got / total;
+  $("verdict").textContent = pct === 1 ? "Perfect score. Move on to the next chapter."
+    : pct >= 0.8 ? "Solid. Review the questions you missed below."
+    : "Re-read the chapter notes, then retry the questions you missed.";
+  const ul = $("review"); ul.innerHTML = "";
+  results.forEach(r => {
+    const li = document.createElement("li");
+    li.className = r.right ? "ok" : "bad";
+    li.textContent = (r.right ? "Correct: " : "Missed: ") + r.item.q;
+    if (!r.right) {
+      const s = document.createElement("small");
+      s.textContent = "Answer: " + r.item.options[r.item.answer];
+      li.appendChild(s);
+    }
+    ul.appendChild(li);
+  });
+  const missed = results.filter(r => !r.right).map(r => r.item);
+  $("retryMissed").hidden = missed.length === 0;
+  $("retryMissed").onclick = () => start(missed);
+  window.scrollTo(0, 0);
+}
+
+$("restart").addEventListener("click", () => start(QUESTIONS));
+start(QUESTIONS);
+</script>
+</body>
+</html>

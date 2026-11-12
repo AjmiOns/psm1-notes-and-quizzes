@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSM I Quiz 2: The Evolution of Project Management</title>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f5f2fc; --line: #d9d3ee;
+    --text: #2e3a4f; --muted: #6b7a90;
+    --accent: #5b4b9a; --accent-tint: #e6e0f8; --on-accent: #ffffff;
+    --ok: #2f7d5b; --ok-tint: #ddf3e8;
+    --bad: #a8465e; --bad-tint: #fbe0e6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17161d; --surface: #201f29; --line: #3a3750;
+      --text: #e7e8ee; --muted: #9aa3b5;
+      --accent: #a99bea; --accent-tint: #2c2745; --on-accent: #17161d;
+      --ok: #6cc9a0; --ok-tint: #17302a;
+      --bad: #f08aa3; --bad-tint: #3a1f29;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { margin-bottom: 24px; }
+  .tag { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  h1 { margin: 0; font-size: 26px; line-height: 1.25; }
+  .progress { display: flex; align-items: center; gap: 12px; margin: 20px 0 24px; font-size: 14px; color: var(--muted); }
+  .bar { flex: 1; height: 6px; background: var(--accent-tint); border-radius: 3px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s ease; }
+  .q { margin: 0 0 18px; font-size: 20px; line-height: 1.4; font-weight: 600; }
+  .options { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .opt {
+    width: 100%; text-align: left; padding: 13px 16px; font: inherit; color: inherit;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .opt:disabled { cursor: default; }
+  .letter { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-tint); color: var(--accent);
+            font-size: 13px; font-weight: 700; display: grid; place-items: center; margin-top: 1px; }
+  .opt.correct { background: var(--ok-tint); border-color: var(--ok); }
+  .opt.correct .letter { background: var(--ok); color: var(--on-accent); }
+  .opt.wrong { background: var(--bad-tint); border-color: var(--bad); }
+  .opt.wrong .letter { background: var(--bad); color: var(--on-accent); }
+  .opt.dim { opacity: .55; }
+  .feedback { margin-top: 18px; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-tint); border-radius: 0 8px 8px 0; }
+  .feedback.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .feedback.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .feedback strong { display: block; margin-bottom: 2px; }
+  .feedback.ok strong { color: var(--ok); }
+  .feedback.bad strong { color: var(--bad); }
+  .feedback p { margin: 0; }
+  button.primary, button.secondary {
+    font: inherit; font-weight: 600; padding: 11px 22px; border-radius: 8px; cursor: pointer; border: 1.5px solid var(--accent);
+  }
+  button.primary { background: var(--accent); color: var(--on-accent); }
+  button.secondary { background: transparent; color: var(--accent); }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .score { font-size: 40px; font-weight: 700; color: var(--accent); margin: 4px 0 2px; }
+  .review { margin: 24px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .review li { padding: 10px 14px; border-radius: 8px; border-left: 4px solid; font-size: 15px; }
+  .review li.ok { border-color: var(--ok); background: var(--ok-tint); }
+  .review li.bad { border-color: var(--bad); background: var(--bad-tint); }
+  .review small { display: block; color: var(--muted); margin-top: 2px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="tag">PSM I | Knowledge check</p>
+    <h1>2. The Evolution of Project Management</h1>
+  </header>
+
+  <section id="quiz" aria-live="polite">
+    <div class="progress"><span id="count"></span><div class="bar"><span id="fill"></span></div></div>
+    <h2 class="q" id="question"></h2>
+    <ul class="options" id="options"></ul>
+    <div id="feedback" class="feedback" hidden></div>
+    <div class="actions"><button class="primary" id="next" hidden>Next question</button></div>
+  </section>
+
+  <section id="result" hidden>
+    <p class="tag">Result</p>
+    <div class="score" id="score"></div>
+    <p id="verdict"></p>
+    <ul class="review" id="review"></ul>
+    <div class="actions">
+      <button class="primary" id="retryMissed" hidden>Retry missed questions</button>
+      <button class="secondary" id="restart">Restart quiz</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// To reuse for another chapter, edit only this array (and the <title>/<h1> above).
+// answer = index of the correct option in "options".
+const QUESTIONS = [
+  { q: "According to PMI, what is a project?",
+    options: ["An ongoing operation that repeats to maintain a product",
+              "A temporary endeavor undertaken to create a unique product, service or result",
+              "A fixed-length iteration of one month or less",
+              "A permanent team that delivers value continuously"],
+    answer: 1,
+    why: "PMI defines a project as a temporary endeavor to create a unique product, service or result. Temporary and unique are the key words." },
+  { q: "Which set lists the characteristics of a classical project?",
+    options: ["Defined scope, defined start, defined end, allocated resources",
+              "Sprint Goal, Increment, Definition of Done, Product Backlog",
+              "Flexible scope, flexible deadline, flexible budget",
+              "Self-managing team, Daily Scrum, Sprint Review, Retrospective"],
+    answer: 0,
+    why: "A classical project always has a defined scope, start and end, plus allocated resources such as budget and team. The other options describe Scrum elements or a project with no constraints." },
+  { q: "When should the scope of a classical project be detailed as much as possible?",
+    options: ["Continuously during every Sprint", "After the testing phase", "Before the project starts", "Only when the customer complains"],
+    answer: 2,
+    why: "The project manager must cut the scope into work packages, build the plan and assign owners. All of that depends on a scope that is fixed before the project starts." },
+  { q: "Why are classical projects called \"waterfall\" projects?",
+    options: ["Because they are always very large and expensive",
+              "Because work is delivered in small pieces every few weeks",
+              "Because the flow is one-directional: once a phase is done there is no going back",
+              "Because team members are replaced after each phase"],
+    answer: 2,
+    why: "Like water flowing down a hill that cannot change direction, work moves phase by phase without returning to earlier phases. This makes changing requirements very painful." },
+  { q: "Adding more team members is always the best way to finish a project faster.",
+    options: ["True: more people always means a shorter timeline",
+              "False: more people add complexity (onboarding, coordination) and can temporarily lower productivity",
+              "True, but only in Scrum projects",
+              "False: team size never affects the timeline"],
+    answer: 1,
+    why: "In theory more resources shorten timelines, but onboarding and coordinating new people adds complexity and causes a short-term productivity drop. This also applies in Agile and Scrum." },
+  { q: "What are the three dimensions of the Golden Triangle, and how are they treated in a classical project?",
+    options: ["Scope, time and costs: all three are fixed before the project starts",
+              "Quality, speed and value: all three are flexible",
+              "Scope, time and costs: scope is flexible, time and costs are fixed",
+              "People, process and tools: all three are set by the Scrum Master"],
+    answer: 0,
+    why: "The Golden Triangle is scope, time and costs. Classical projects fix all three up front, often by contract. Option 3 describes the Scrum version of the triangle." },
+  { q: "Which dimension of the triangle is NOT fixed in a Scrum project?",
+    options: ["Time (e.g. Sprint end dates)", "Costs (a stable team)", "Scope", "All three are fixed in Scrum too"],
+    answer: 2,
+    why: "In Scrum the triangle is upside down: time (Sprint length) and costs (stable team) are fixed, while scope changes with customer feedback and is reprioritized every Sprint." },
+  { q: "Which of these is NOT a responsibility of the classical project manager?",
+    options: ["Managing the project scope and cutting it into work packages",
+              "Creating the project plan and monitoring progress",
+              "Handling risks such as dependencies on other teams",
+              "Accounting for the Product Backlog and maximizing product value"],
+    answer: 3,
+    why: "Being accountable for the Product Backlog and maximizing value is the Product Owner's accountability in Scrum. The project manager handles scope, time, costs/resources and risks." },
+  { q: "Which statement about project managers in Scrum is correct?",
+    options: ["The Scrum Master is the project manager of the Scrum Team",
+              "The Product Owner takes over the project manager role",
+              "A project manager is a required fourth role that coordinates the Developers",
+              "There is no project manager in Scrum, only the Product Owner, Scrum Master and Developers"],
+    answer: 3,
+    why: "Scrum defines exactly three accountabilities. Tasks such as time management are handled by the self-managing Scrum Team, not by one central role." },
+  { q: "For which kind of project does the waterfall approach work best?",
+    options: ["A new online shop whose requirements change constantly",
+              "An IT transition replacing a running application with a newer version and no new features",
+              "A product that needs user feedback every two weeks",
+              "Any project, since waterfall is always superior"],
+    answer: 1,
+    why: "Waterfall fits when the scope is 100% fixed, as in a like-for-like IT transition. The online shop is the classic example where scope cannot be fixed because requirements keep changing." }
+];
+
+const $ = id => document.getElementById(id);
+const letters = "ABCD";
+let pool = [], idx = 0, results = [];
+
+function start(list) {
+  pool = list.slice(); idx = 0; results = [];
+  $("result").hidden = true; $("quiz").hidden = false;
+  show();
+}
+
+function show() {
+  const item = pool[idx];
+  $("count").textContent = "Question " + (idx + 1) + " of " + pool.length;
+  $("fill").style.width = (idx / pool.length * 100) + "%";
+  $("question").textContent = item.q;
+  $("feedback").hidden = true; $("next").hidden = true;
+  const ul = $("options"); ul.innerHTML = "";
+  item.options.forEach((text, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    b.innerHTML = '<span class="letter">' + letters[i] + '</span><span></span>';
+    b.lastChild.textContent = text;
+    b.addEventListener("click", () => choose(i));
+    li.appendChild(b); ul.appendChild(li);
+  });
+}
+
+function choose(i) {
+  const item = pool[idx], right = i === item.answer;
+  results.push({ item, right });
+  [...$("options").querySelectorAll(".opt")].forEach((b, n) => {
+    b.disabled = true;
+    if (n === item.answer) b.classList.add("correct");
+    else if (n === i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const fb = $("feedback");
+  fb.className = "feedback " + (right ? "ok" : "bad");
+  fb.innerHTML = "<strong></strong><p></p>";
+  fb.firstChild.textContent = right ? "Correct" : "Wrong. The answer is " + letters[item.answer] + ".";
+  fb.lastChild.textContent = item.why;
+  fb.hidden = false;
+  $("fill").style.width = ((idx + 1) / pool.length * 100) + "%";
+  const next = $("next");
+  next.textContent = idx === pool.length - 1 ? "See results" : "Next question";
+  next.hidden = false; next.focus();
+}
+
+$("next").addEventListener("click", () => {
+  if (idx === pool.length - 1) return finish();
+  idx++; show();
+});
+
+function finish() {
+  $("quiz").hidden = true; $("result").hidden = false;
+  const got = results.filter(r => r.right).length, total = results.length;
+  $("score").textContent = got + " / " + total;
+  const pct = got / total;
+  $("verdict").textContent = pct === 1 ? "Perfect score. Move on to the next chapter."
+    : pct >= 0.8 ? "Solid. Review the questions you missed below."
+    : "Re-read the chapter notes, then retry the questions you missed.";
+  const ul = $("review"); ul.innerHTML = "";
+  results.forEach(r => {
+    const li = document.createElement("li");
+    li.className = r.right ? "ok" : "bad";
+    li.textContent = (r.right ? "Correct: " : "Missed: ") + r.item.q;
+    if (!r.right) {
+      const s = document.createElement("small");
+      s.textContent = "Answer: " + r.item.options[r.item.answer];
+      li.appendChild(s);
+    }
+    ul.appendChild(li);
+  });
+  const missed = results.filter(r => !r.right).map(r => r.item);
+  $("retryMissed").hidden = missed.length === 0;
+  $("retryMissed").onclick = () => start(missed);
+  window.scrollTo(0, 0);
+}
+
+$("restart").addEventListener("click", () => start(QUESTIONS));
+start(QUESTIONS);
+</script>
+</body>
+</html>
