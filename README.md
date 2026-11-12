@@ -5,6 +5,8 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 [![GitHub Pages](https://img.shields.io/badge/quizzes-live%20on%20GitHub%20Pages-5b4b9a)](https://ajmions.github.io/psm1-notes-and-quizzes/)
 [![Status](https://img.shields.io/badge/status-in%20progress-lightgrey)](#roadmap)
 
+**Live site:** https://ajmions.github.io/psm1-notes-and-quizzes/
+
 > **Unofficial study material.** Not affiliated with or endorsed by Scrum.org. *Professional Scrum Master* and *PSM* are trademarks of Scrum.org.
 
 ---
@@ -29,7 +31,7 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 3. Take the **quiz** (it opens in your browser, no install or sign-up).
 4. Retry the questions you missed until you reach 100%.
 
-> **Start here:** [Practice quiz, 31 mixed exam-style questions](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_09_Exam_Readiness_Quiz.html)
+> **Start here:** open the [live site](https://ajmions.github.io/psm1-notes-and-quizzes/) for the chapter index, or jump straight to the [full timed mock exam](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_Full_Mock_Exam.html) or the [31-question mixed practice quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_09_Exam_Readiness_Quiz.html).
 
 ---
 
@@ -46,7 +48,17 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 | 11 | Practical Guide #2: Serving the Product Owner | [PDF](Course/PSM1_11_Practical_Guide_Product_Owner.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_11_Practical_Guide_Product_Owner_Quiz.html) | 24 |
 | 12 | Important Terms in Scrum | [PDF](Course/PSM1_12_Important_Terms.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_12_Important_Terms_Quiz.html) | 22 |
 
-**Total: 8 chapters, 164 questions.**
+**Total: 8 chapters, 164 questions, plus the full mock exam below.**
+
+### Full mock exam
+
+[**Start the timed mock exam**](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_Full_Mock_Exam.html) is modeled on the real PSM I format: **80 questions, 60 minutes, 85% to pass**.
+
+- Draws 80 random questions from a pool of 151 unique questions across all chapters, so every attempt is different.
+- Countdown timer with warnings at 10 and 2 minutes, and automatic submission when time runs out.
+- Free navigation, answer changes and a **flag for review** option, as in the real assessment.
+- Results with pass/fail, a per-chapter breakdown and an explanation for every missed question.
+- All questions have a single correct answer. The real exam also includes multiple-answer and true/false questions.
 
 ### Topics at a glance
 
@@ -78,8 +90,9 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 
 ```text
 psm1-notes-and-quizzes/
+├── index.html  # Landing page (site home on GitHub Pages)
 ├── Course/     # PDF study notes, one per chapter
-├── Quiz/       # Interactive HTML quizzes, one per chapter
+├── Quiz/       # Interactive HTML quizzes and the full mock exam
 └── README.md
 ```
 
@@ -100,18 +113,21 @@ Open any file in `Quiz/` with a browser, for example by double-clicking it.
 
 ### Add a new quiz
 
-Each quiz is built from the same template. To create one for another chapter, copy an existing file from `Quiz/` and edit only:
+Each chapter quiz is built from the same template. To create one for another chapter, copy an existing file from `Quiz/` and edit only:
 
 1. the `<title>` and `<h1>`,
 2. the `QUESTIONS` array, where each entry has `q` (the question), `options` (four choices), `answer` (the index of the correct option, starting at 0) and `why` (the explanation).
+
+The mock exam has its own `POOL` array at the top of `Quiz/PSM1_Full_Mock_Exam.html`, with the keys `c` (chapter), `q`, `o` (options), `a` (answer index) and `w` (explanation).
 
 ---
 
 ## Roadmap
 
 - [ ] Add notes and quizzes for the remaining chapters
-- [ ] Add an `index.html` landing page as the site's home
-- [ ] Add a full-length timed mock exam
+- [x] Add an `index.html` landing page as the site's home
+- [x] Add a full-length timed mock exam
+- [ ] Add multiple-answer and true/false questions to the mock exam
 
 ---
 
