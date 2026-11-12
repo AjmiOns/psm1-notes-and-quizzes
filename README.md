@@ -18,6 +18,7 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 - [Run locally](#run-locally)
 - [Roadmap](#roadmap)
 - [Disclaimer](#disclaimer)
+- [Author](#author)
 
 ---
 
@@ -119,3 +120,14 @@ Each quiz is built from the same template. To create one for another chapter, co
 These materials are personal study notes written for learning purposes. They are **unofficial** and may contain errors or simplifications. For the authoritative definition of the framework, always refer to the [Scrum Guide](https://scrumguides.org/) and the [Scrum.org PSM I](https://www.scrum.org/professional-scrum-master-i-certification) pages.
 
 Issues and corrections are welcome: please open an [issue](https://github.com/AjmiOns/psm1-notes-and-quizzes/issues).
+
+---
+
+## Author
+
+**Ajmi Ons**
+
+Cloud Infrastructure Management Engineering student at TEK-UP University, Tunisia.
+
+- 🐙 GitHub: [AjmiOns](https://github.com/AjmiOns)
+- 💼 LinkedIn: [Ons Ajmi](https://www.linkedin.com/in/ons-ajmi--/)
