@@ -133,7 +133,7 @@ The mock exam has its own `POOL` array at the top of `Quiz/PSM1_Full_Mock_Exam.h
 
 ## Roadmap
 
-- [ ] Add notes and quizzes for the remaining chapters
+- [x] Add notes and quizzes for the remaining chapters
 - [x] Add an `index.html` landing page as the site's home
 - [x] Add a full-length timed mock exam
 - [ ] Add multiple-answer and true/false questions to the mock exam
