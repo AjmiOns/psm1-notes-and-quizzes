@@ -7,6 +7,8 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 
 **Live site:** https://ajmions.github.io/psm1-notes-and-quizzes/
 
+[![Landing page preview](assets/landing-page.png)](https://ajmions.github.io/psm1-notes-and-quizzes/)
+
 > **Unofficial study material.** Not affiliated with or endorsed by Scrum.org. *Professional Scrum Master* and *PSM* are trademarks of Scrum.org.
 
 ---
@@ -39,6 +41,10 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 
 | # | Topic | Notes | Quiz | Questions |
 |---|-------|-------|------|-----------|
+| 1 | Introduction | [PDF](Course/PSM1_01_Introduction.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_01_Introduction_Quiz.html) | 18 |
+| 2 | Evolution | [PDF](Course/PSM1_02_Evolution.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_02_Evolution_Quiz.html) | n/a |
+| 3 | Agile Foundations | [PDF](Course/PSM1_03_Agile_Foundations.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_03_Agile_Foundations_Quiz.html) | n/a |
+| 4 | Scrum Theory and Basics | [PDF](Course/PSM1_04_Scrum_Theory_and_Basics.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_04_Scrum_Theory_and_Basics_Quiz.html) | n/a |
 | 5 | Scrum Team Accountabilities | [PDF](Course/PSM1_05_Scrum_Team_Accountabilities.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_05_Scrum_Team_Accountabilities_Quiz.html) | 12 |
 | 6 | Scrum Events | [PDF](Course/PSM1_06_Scrum_Events.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_06_Scrum_Events_Quiz.html) | 21 |
 | 7 | Scrum Artifacts | [PDF](Course/PSM1_07_Scrum_Artifacts.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_07_Scrum_Artifacts_Quiz.html) | 21 |
@@ -48,7 +54,7 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 | 11 | Practical Guide #2: Serving the Product Owner | [PDF](Course/PSM1_11_Practical_Guide_Product_Owner.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_11_Practical_Guide_Product_Owner_Quiz.html) | 24 |
 | 12 | Important Terms in Scrum | [PDF](Course/PSM1_12_Important_Terms.pdf) | [Take quiz](https://ajmions.github.io/psm1-notes-and-quizzes/Quiz/PSM1_12_Important_Terms_Quiz.html) | 22 |
 
-**Total: 8 chapters, 164 questions, plus the full mock exam below.**
+**Total: 12 chapters, plus the full mock exam below.**
 
 ### Full mock exam
 
@@ -64,6 +70,8 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 
 | Chapter | Key concepts |
 |---------|--------------|
+| 1 | Why Scrum exists, the Scrum Team, Sprints, key artifacts, purpose of Scrum |
+| 2 to 4 | Evolution, Agile foundations, Scrum theory and basics (see the PDF notes) |
 | 5 | Product Owner, Scrum Master, Developers, self-managing and cross-functional teams, servant leadership |
 | 6 | Sprint, Sprint Planning, Daily Scrum, Sprint Review, Sprint Retrospective, timeboxes |
 | 7 | Product Backlog, Sprint Backlog, Increment, Product Goal, Sprint Goal, Definition of Done |
@@ -91,6 +99,7 @@ Study notes and interactive quizzes for the **Professional Scrum Master I (PSM I
 ```text
 psm1-notes-and-quizzes/
 ├── index.html  # Landing page (site home on GitHub Pages)
+├── assets/     # Images used in this README
 ├── Course/     # PDF study notes, one per chapter
 ├── Quiz/       # Interactive HTML quizzes and the full mock exam
 └── README.md
